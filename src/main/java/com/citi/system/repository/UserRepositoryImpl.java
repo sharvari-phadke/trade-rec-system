@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.citi.system.dto.StockDTO;
 import com.citi.system.dto.User;
 import com.citi.system.utils.QueryUtils;
 
@@ -61,4 +62,5 @@ public class UserRepositoryImpl implements UserRepository {
 		return isUserValid;
 	}
 
+	
 }

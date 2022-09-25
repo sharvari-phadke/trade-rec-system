@@ -56,7 +56,6 @@ public class StockRepositoryImpl implements StockRepository{
 				paramsMap.put("username", user_name);
 				String getStocksList= QueryUtils.returnQueryString("getAllStocks", paramsMap);
 				Statement st = con.createStatement();
-//				System.out.println(getStocksList+ " : getStocksList");
 				ResultSet rs= st.executeQuery(getStocksList);
 				
 				while(rs.next()) {
@@ -130,7 +129,7 @@ public class StockRepositoryImpl implements StockRepository{
 		}
 		
 		if(connected) {
-			try { 
+			try { 				
 				paramsMap.put("stock", stock);
 				paramsMap.put("symbol",stock.getSymbol());
 				paramsMap.put("currPrice", stock.getCurrPrice());
@@ -138,25 +137,39 @@ public class StockRepositoryImpl implements StockRepository{
 				paramsMap.put("changePercent", stock.getChangePercent());
 				paramsMap.put("quantitySaved", stock.getQuantitySaved()); 
 				paramsMap.put("username", stock.getUsername());
-				String addStockQry= QueryUtils.returnQueryString("addStock", paramsMap);
 				Statement st = con.createStatement();
-				System.out.println(addStockQry+ " : addStockQry");
-				int numAdded= st.executeUpdate(addStockQry);
-				System.out.println(numAdded+ " : added");
+				int numDeleted= 0;
 				
+				String getStockQry= QueryUtils.returnQueryString("getStock", paramsMap);
+				int rs= st.executeUpdate(getStockQry); 
+				
+				if(rs > 0) {
+					String delStockQry= QueryUtils.returnQueryString("deleteStock", paramsMap);
+					numDeleted=  st.executeUpdate(delStockQry);
+					System.out.println(numDeleted+ " : deleted");
+					
+				}
+				
+				String addStockQry= QueryUtils.returnQueryString("addStock", paramsMap);
+				System.out.println(addStockQry+ " : addStockQry");
+				int numAdded= 0;
+				if(stock.getUsername()!=null && stock.getQuantitySaved()>0) {
+					numAdded= st.executeUpdate(addStockQry);
+				}
+				System.out.println(numAdded+ " : added");
+
 				if(numAdded == 0) {
 					isAdded= false;
 				}else {
 					isAdded= true;
 				}
-
+				
 			} catch (SQLException e) {
 				isAdded= false;
 				e.printStackTrace();
 			} 
 		}
+		
 		return isAdded; 
 	}
-
-	
 }
